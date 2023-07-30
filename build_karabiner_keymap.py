@@ -102,13 +102,22 @@ def build(rules):
         ]
     }
 
+def build_layer_rules(label, activations , mappings):
+    l2_rules = []
+    for key in activations:
+        for (f, t) in mappings.items():
+            l2_rules += build_lt(key, f, t)
+    return {
+        "description": f"{label} rules",
+        "manipulators": l2_rules,
+    }
+
 
 if __name__ == '__main__':
     import pprint
     import json
     import os.path
-    space_tap_layers = [
-        "spacebar",
+    activations = [
         "tab",
     ]
     mappings = {
@@ -117,37 +126,48 @@ if __name__ == '__main__':
         'k': 'up_arrow',
         'l': 'right_arrow',
 
-        'y': 'hyphen',
-        'u': 'equal_sign',
-        'i': 'open_bracket',
-        'o': 'close_bracket',
-        'p': 'backslash',
+        # Since caps lock is backspace
+        'caps_lock': 'caps_lock',
+
+        'q': 'f1',
+        'w': 'f2',
+        'e': 'f3',
+        'r': 'f4',
+        't': 'f5',
+        'y': 'f6',
+        'u': 'f7',
+        'i': 'f8',
+        'o': 'f9',
+        'p': 'f0',
+    }
+    l2_rules = build_layer_rules("layer2", activations, mappings)
+
+    activations = [
+        "spacebar",
+    ]
+    mappings = {
+        'h': 'hyphen',
+        'j': 'equal_sign',
+        'k': 'open_bracket',
+        'l': 'close_bracket',
+        'semicolon': 'backslash',
 
         # Since caps lock is backspace
         'caps_lock': 'caps_lock',
 
-        'q': 'escape',
-        '1': 'f1',
-        '2': 'f2',
-        '3': 'f3',
-        '4': 'f4',
-        '5': 'f5',
-        '6': 'f6',
-        '7': 'f7',
-        '8': 'f8',
-        '9': 'f9',
-        '10': 'f10',
-        '11': 'f11',
-        '12': 'f12',
+        'q': '1',
+        'w': '2',
+        'e': '3',
+        'r': '4',
+        't': '5',
+        'y': '6',
+        'u': '7',
+        'i': '8',
+        'o': '9',
+        'p': '0',
+
     }
-    l1_rules = []
-    for key in space_tap_layers:
-        for (f, t) in mappings.items():
-            l1_rules += build_lt(key, f, t)
-    l1_rules = {
-        "description": "layer1 rules",
-        "manipulators": l1_rules,
-    }
+    l1_rules = build_layer_rules("layer1", activations, mappings)
 
     basic_rules = {
         "description": "basic rules",
@@ -166,8 +186,10 @@ if __name__ == '__main__':
         ]
     }
 
-    rules = [l1_rules, basic_rules]
+    rules = [l1_rules, l2_rules, basic_rules]
     fname = os.path.expanduser('~/.config/karabiner/karabiner.json')
+    output = build(rules)
+    pprint.pprint(output)
     with open(fname, 'w') as fp:
-        json.dump(build(rules), fp, sort_keys=True, indent=4)
+        json.dump(output, fp, sort_keys=True, indent=4)
     print(f"Created {fname}")
