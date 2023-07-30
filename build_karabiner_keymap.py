@@ -119,6 +119,40 @@ if __name__ == '__main__':
     import os.path
     rules = []
 
+    #################################################################################
+    # LAYER 1
+    #################################################################################
+    activations = [
+        "spacebar",
+    ]
+    mappings = {
+        'h': 'hyphen',
+        'j': 'equal_sign',
+        'k': 'open_bracket',
+        'l': 'close_bracket',
+        'semicolon': 'backslash',
+
+        # Since caps lock is backspace
+        'caps_lock': 'caps_lock',
+
+        'q': '1',
+        'w': '2',
+        'e': '3',
+        'r': '4',
+        't': '5',
+        'y': '6',
+        'u': '7',
+        'i': '8',
+        'o': '9',
+        'p': '0',
+
+    }
+    for r in build_layer_rules("layer1", activations, mappings):
+        rules += r
+
+    #################################################################################
+    # LAYER 2
+    #################################################################################
     activations = [
         "tab",
     ]
@@ -145,40 +179,10 @@ if __name__ == '__main__':
     for r in build_layer_rules("layer2", activations, mappings):
         rules += r
 
-    activations = [
-        "spacebar",
-    ]
-    mappings = {
-        'h': 'hyphen',
-        'j': 'equal_sign',
-        'k': 'open_bracket',
-        'l': 'close_bracket',
-        'semicolon': 'backslash',
-
-        # Since caps lock is backspace
-        'caps_lock': 'caps_lock',
-
-        'q': '1',
-        'w': '2',
-        'e': '3',
-        'r': '4',
-        't': '5',
-        'y': '6',
-        'u': '7',
-        'i': '8',
-        'o': '9',
-        'p': '0',
-
-    }
-    # l1_rules = build_layer_rules("layer1", activations, mappings)
-    for r in build_layer_rules("layer1", activations, mappings):
-        rules += r
     layer_rules = {
         "description": "layer rules",
         "manipulators": rules,
     }
-
-    #l1_rules.update(l2_rules)
 
     basic_rules = {
         "description": "basic rules",
