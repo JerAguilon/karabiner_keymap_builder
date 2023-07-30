@@ -102,21 +102,23 @@ def build(rules):
         ]
     }
 
-def build_layer_rules(label, activations , mappings):
-    l2_rules = []
+def build_layer_rules(layer, activations , mappings):
+    # rules = []
     for key in activations:
         for (f, t) in mappings.items():
-            l2_rules += build_lt(key, f, t)
-    return {
-        "description": f"{label} rules",
-        "manipulators": l2_rules,
-    }
+            yield build_lt(key, f, t, layer)
+    # return {
+    #     "description": f"{label} rules",
+    #     "manipulators": rules,
+    # }
 
 
 if __name__ == '__main__':
     import pprint
     import json
     import os.path
+    rules = []
+
     activations = [
         "tab",
     ]
@@ -138,9 +140,10 @@ if __name__ == '__main__':
         'u': 'f7',
         'i': 'f8',
         'o': 'f9',
-        'p': 'f0',
+        'p': 'f10',
     }
-    l2_rules = build_layer_rules("layer2", activations, mappings)
+    for r in build_layer_rules("layer2", activations, mappings):
+        rules += r
 
     activations = [
         "spacebar",
@@ -167,7 +170,15 @@ if __name__ == '__main__':
         'p': '0',
 
     }
-    l1_rules = build_layer_rules("layer1", activations, mappings)
+    # l1_rules = build_layer_rules("layer1", activations, mappings)
+    for r in build_layer_rules("layer1", activations, mappings):
+        rules += r
+    layer_rules = {
+        "description": "layer rules",
+        "manipulators": rules,
+    }
+
+    #l1_rules.update(l2_rules)
 
     basic_rules = {
         "description": "basic rules",
@@ -186,7 +197,7 @@ if __name__ == '__main__':
         ]
     }
 
-    rules = [l1_rules, l2_rules, basic_rules]
+    rules = [layer_rules, basic_rules]
     fname = os.path.expanduser('~/.config/karabiner/karabiner.json')
     output = build(rules)
     pprint.pprint(output)
